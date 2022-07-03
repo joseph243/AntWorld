@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Ant World</string>
+    <string name="start_button">Start</string>
+    <string name="stats_button">Stats</string>
+    <string name="score">Score</string>
+    <string name="event_bird_kill">Your ants were consumed by a hungry bird.  One ant survived long enough to raise alarm.</string>
+    <string name="event_bird_consume">Your ants have encountered a weakened bird and killed it.</string>
+    <string name="event_ant_encounter">Your ants have encountered ants from another colony.</string>
+    <string name="event_ant_kill">Your ants were killed by ants from another colony.  Bodies are littered across the ground.</string>
+    <string name="event_ant_consume">Your ants have killed ants from another colony.  Bodies are littered across the ground.</string>
+
+
+</resources>
