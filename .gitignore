@@ -1,6 +1,9 @@
 # Gradle files
 .gradle/
 build/
+settings.gradle
+gradle*
+build.gradle
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -31,3 +34,10 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+#proguard i dont care
+app/proguard-rules.pro
+
+#no test
+app/src/androidTest
+app/src/test
