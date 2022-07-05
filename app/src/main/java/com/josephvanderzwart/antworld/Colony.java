@@ -1,50 +1,82 @@
 package com.josephvanderzwart.antworld;
 
-import androidx.appcompat.app.AppCompatActivity;
+public class Colony {
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.view.View;
-import android.widget.TextView;
+    private int ants;
+    private int food;
+    private int queens;
+    private int growth;
+    private boolean enoughFood;
+    //TODO  modifiers, key, value pair ??
 
-public class Colony extends AppCompatActivity {
-
-    private TextView textView;
-
-    private static Handler handler;
-
-    public static Handler getHandler(){
-        return handler;
+    public Colony(int inQueens, int inAnts) {
+        this.ants = inAnts;
+        this.queens = inQueens;
+        this.food = 1;
+        this.growth = 1;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_colony);
-        getSupportActionBar().hide();
+    public Colony() {
+        this.ants = 10;
+        this.queens = 1;
+        this.food = 1;
+        this.growth = 1;
+    }
 
-        //counter text view:
-        textView = (TextView) findViewById(R.id.counter);
+    //main progression for each tick.
+    public void grow() {
 
-        //init handler for posting message:
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg){
-                textView.setText(msg.getData().get("key").toString());
+//        if (food >= (ants / 10)) {
+//            enoughFood = true;
+//        }
+//        else enoughFood = false;
+        //TODO implement food system
+        enoughFood = true;
+
+        //growth cap 1mil:
+        if (ants < 1000000) {
+            //enough food = normal growth
+            if (enoughFood) {
+                ants = ants + (queens * growth);
             }
-        };
+            //else growth penalty
+            else {
+                ants = ants + (queens * (growth-1));
+            }
+        }
+
+        //TODO food system
+        // eat one food if present
+        if (food > 0) {food -= 1;}
     }
 
-    public void onPictureView(View view) {
-        Intent intent = new Intent(this, PictureEvent.class);
-        startActivity(intent);
+    public void handleEvent() {
+        //TODO unique events.
     }
 
-    public void onScoreButton(View view) {
-        Intent intent = new Intent(this, Score.class);
-        startActivity(intent);
+    public void addGrowthMod() {
+        //TODO add growth mods
     }
 
+    public int getAnts() {
+        return ants;
+    }
+
+    public String getZeroPaddedAnts() {
+        String antsString = "" + ants;
+        String result = "0000000";
+        return result.substring(0,8-antsString.length()) + antsString;
+    }
+
+    public int getFood() {
+        return food;
+    }
+
+    public int getQueens() {
+        return queens;
+    }
+
+    public int getGrowth() {
+        return growth;
+    }
 }

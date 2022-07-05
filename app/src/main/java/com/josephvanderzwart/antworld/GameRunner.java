@@ -11,16 +11,30 @@ public class GameRunner implements Runnable {
     public Message message;
 
     public void run() {
-        System.out.println("entering run");
-        while (running) {
-            i++;
-            try {
-                System.out.println("running: " + i);
+        Colony colony = new Colony();
 
+        //MAIN GAME LOOP
+        while (running) {
+            colony.grow();
+
+            //if (Events.randomEventOccurs) { handle event }
+
+
+
+            //tick time = 1 second.
+            try {
+                Thread.sleep(1000);
+            }
+            catch (InterruptedException e) {}
+
+
+
+                //TODO all this should be moved to a generic sendmessage and
+            //TODO not worry about what screen i'm on.  if screen != null etc.
                 //handler attempt
                 while (message == null) {
                     try {
-                        message = Colony.getHandler().obtainMessage();
+                        message = ColonyActivity.getHandler().obtainMessage();
                     }
                     catch (Exception e)
                     {
@@ -28,17 +42,13 @@ public class GameRunner implements Runnable {
                     }
                 }
                 Bundle bundle = new Bundle();
-                bundle.putString("key", "Ants Count: " + i);
+                bundle.putString("ants", colony.getZeroPaddedAnts());
+                bundle.putString("queens", "Queens Count: " + colony.getQueens());
+                bundle.putString("growth", "Growth: " + colony.getGrowth());
                 message.setData(bundle);
-                Colony.getHandler().sendMessage(message);
+                ColonyActivity.getHandler().sendMessage(message);
                 message = null;
                 //end attempt
-
-                Thread.sleep(1000);
-            }
-            catch (InterruptedException e) {
-
-            }
         }
     }
 

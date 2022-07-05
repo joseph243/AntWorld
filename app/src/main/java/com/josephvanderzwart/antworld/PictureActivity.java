@@ -6,24 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
-
-    GameRunner game = null;
+public class PictureActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_picture_event);
     }
 
-    public void onStartButton(View view) {
-        //open new game if applicable, and navigate to ColonyActivity screen:
-
-        if (game == null) {
-            game = new GameRunner();
-            game.start();
-        }
-
+    public void onPictureClick(View view) {
         Intent intent = new Intent(this, ColonyActivity.class);
         startActivity(intent);
     }

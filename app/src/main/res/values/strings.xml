@@ -8,6 +8,6 @@
     <string name="event_ant_encounter">Your ants have encountered ants from another colony.</string>
     <string name="event_ant_kill">Your ants were killed by ants from another colony.  Bodies are littered across the ground.</string>
     <string name="event_ant_consume">Your ants have killed ants from another colony.  Bodies are littered across the ground.</string>
-
+    <string name="populationLabel">Population: </string>
 
 </resources>

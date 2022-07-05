@@ -14,13 +14,13 @@
         android:theme="@style/Theme.AntWorld"
         tools:targetApi="31">
         <activity
-            android:name=".Score"
+            android:name=".ScoreActivity"
             android:exported="false" />
         <activity
-            android:name=".PictureEvent"
+            android:name=".PictureActivity"
             android:exported="false" />
         <activity
-            android:name=".Colony"
+            android:name=".ColonyActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
