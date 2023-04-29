@@ -1,5 +1,7 @@
 package com.josephvanderzwart.antworld;
 
+import java.util.Random;
+
 public class Colony {
 
     private int ants;
@@ -7,22 +9,27 @@ public class Colony {
     private int queens;
     private int growth;
     private boolean enoughFood;
+    private int xPos;
+    private int yPos;
     //TODO  modifiers, key, value pair ??
 
     public Colony(int inQueens, int inAnts) {
+        setup(inAnts, inQueens);
+    }
+
+    public Colony() {
+        setup(10,1);
+    }
+
+    private void setup(int inAnts, int inQueens) {
+        Random random = new Random();
         this.ants = inAnts;
         this.queens = inQueens;
         this.food = 1;
         this.growth = 1;
+        this.xPos = random.nextInt(10);
+        this.yPos = random.nextInt(10);
     }
-
-    public Colony() {
-        this.ants = 10;
-        this.queens = 1;
-        this.food = 1;
-        this.growth = 1;
-    }
-
     //main progression for each tick.
     public void grow() {
 
@@ -33,15 +40,18 @@ public class Colony {
         //TODO implement food system
         enoughFood = true;
 
-        //growth cap 1mil:
+        //growth calculation:
+        growth = 0 + queens;
+
+        //size cap 1mil:
         if (ants < 1000000) {
             //enough food = normal growth
             if (enoughFood) {
-                ants = ants + (queens * growth);
+                ants = ants + (1 * growth);
             }
             //else growth penalty
             else {
-                ants = ants + (queens * (growth-1));
+                ants = ants + (1 * (growth-1));
             }
         }
 
@@ -79,4 +89,14 @@ public class Colony {
     public int getGrowth() {
         return growth;
     }
+
+    public void killAnts(int kill) {
+        ants = ants - kill;
+    }
+
+    public void addQueen() {queens = queens + 1; }
+
+    public int getxPos() {return xPos;}
+
+    public int getyPos() {return yPos;}
 }

@@ -21,16 +21,7 @@ public class ColonyActivity extends AppCompatActivity {
         return handler;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_colony);
-
-        //counter text view:
-        textViewAnts = (TextView) findViewById(R.id.ants);
-        textViewQueens = (TextView) findViewById(R.id.queens);
-        textViewGrowth = (TextView) findViewById(R.id.growth);
-
+    private void initializeHandler() {
         //init handler for posting message:
         handler = new Handler() {
             @Override
@@ -42,8 +33,37 @@ public class ColonyActivity extends AppCompatActivity {
         };
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_colony);
+        initializeHandler();
+
+        //counter text view:
+        textViewAnts = (TextView) findViewById(R.id.ants);
+        textViewQueens = (TextView) findViewById(R.id.queens);
+        textViewGrowth = (TextView) findViewById(R.id.growth);
+    }
+
+    public void setProgress() {
+
+    }
+
     public void onPictureView(View view) {
         Intent intent = new Intent(this, PictureActivity.class);
+        startActivity(intent);
+    }
+
+    public void onAddQueen(View view) {
+        AntWorldApp mainApp = (AntWorldApp)getApplicationContext();
+        if (mainApp.getGameRunner().getColony().getAnts() > 100) {
+            mainApp.getGameRunner().getColony().addQueen();
+            mainApp.getGameRunner().getColony().killAnts(100);
+        }
+    }
+
+    public void onMap(View view) {
+        Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }
 
