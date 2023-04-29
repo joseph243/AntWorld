@@ -8,8 +8,6 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    GameRunner game = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,11 +16,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void onStartButton(View view) {
         //open new game if applicable, and navigate to ColonyActivity screen:
-
-        if (game == null) {
-            game = new GameRunner();
-            game.start();
-        }
+        AntWorldApp mainApp = (AntWorldApp)getApplicationContext();
+        mainApp.startGameRunner();
 
         Intent intent = new Intent(this, ColonyActivity.class);
         startActivity(intent);
