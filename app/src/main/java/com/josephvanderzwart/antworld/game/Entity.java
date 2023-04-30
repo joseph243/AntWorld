@@ -1,4 +1,4 @@
-package com.josephvanderzwart.antworld;
+package com.josephvanderzwart.antworld.game;
 
 public class Entity {
     private int strength;

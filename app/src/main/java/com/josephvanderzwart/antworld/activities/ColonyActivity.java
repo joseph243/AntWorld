@@ -1,4 +1,4 @@
-package com.josephvanderzwart.antworld;
+package com.josephvanderzwart.antworld.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,6 +8,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
+
+import com.josephvanderzwart.antworld.AntWorldApp;
+import com.josephvanderzwart.antworld.R;
 
 public class ColonyActivity extends AppCompatActivity {
 

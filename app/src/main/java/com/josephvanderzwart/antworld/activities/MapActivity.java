@@ -1,4 +1,4 @@
-package com.josephvanderzwart.antworld;
+package com.josephvanderzwart.antworld.activities;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,6 +11,10 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.josephvanderzwart.antworld.AntWorldApp;
+import com.josephvanderzwart.antworld.game.Entity;
+import com.josephvanderzwart.antworld.R;
 
 import java.util.List;
 

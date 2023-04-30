@@ -3,6 +3,10 @@ package com.josephvanderzwart.antworld;
 import android.os.Bundle;
 import android.os.Message;
 
+import com.josephvanderzwart.antworld.activities.ColonyActivity;
+import com.josephvanderzwart.antworld.game.Colony;
+import com.josephvanderzwart.antworld.game.Entity;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

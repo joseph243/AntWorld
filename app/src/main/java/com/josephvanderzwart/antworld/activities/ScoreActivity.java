@@ -1,8 +1,10 @@
-package com.josephvanderzwart.antworld;
+package com.josephvanderzwart.antworld.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.josephvanderzwart.antworld.R;
 
 public class ScoreActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.josephvanderzwart.antworld;
+package com.josephvanderzwart.antworld.game;
 
 import java.util.concurrent.ThreadLocalRandom;
 

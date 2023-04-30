@@ -1,10 +1,13 @@
-package com.josephvanderzwart.antworld;
+package com.josephvanderzwart.antworld.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import com.josephvanderzwart.antworld.AntWorldApp;
+import com.josephvanderzwart.antworld.R;
 
 public class PictureActivity extends AppCompatActivity {
 
