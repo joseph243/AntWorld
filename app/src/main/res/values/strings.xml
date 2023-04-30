@@ -3,6 +3,11 @@
     <string name="start_button">Start</string>
     <string name="stats_button">Stats</string>
     <string name="score">Score</string>
+    <string name="addQueen">Add Queen</string>
+    <string name="mapView">Map View</string>
+    <string name="picture">Event</string>
+    <string name="return_button">Return</string>
+
     <string name="event_bird_kill">Your ants were consumed by a hungry bird.  One ant survived long enough to raise alarm.</string>
     <string name="event_bird_consume">Your ants have encountered a weakened bird and killed it.</string>
     <string name="event_ant_encounter">Your ants have encountered ants from another colony.</string>
