@@ -4,10 +4,8 @@ import android.os.Bundle;
 import android.os.Message;
 
 import com.josephvanderzwart.antworld.activities.ColonyActivity;
-import com.josephvanderzwart.antworld.game.Colony;
-import com.josephvanderzwart.antworld.game.Entity;
+import com.josephvanderzwart.antworld.game.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -16,35 +14,36 @@ public class GameRunner implements Runnable {
     private volatile boolean running = true;
     private Thread thread;
     public Message message;
-    private Colony colony = null;
-    private List<Entity> map = new ArrayList<>();
-    private Entity playerentity;
+    private WorldMap world;
+    private Colony activeColony;
 
-    public Colony getColony() {
-        return colony;
+    public Entity getEntityAt(int coord) {
+        return world.getEntityAt(coord);
     }
 
     public void stopRunning() { running = false; }
 
     public void run() {
-        colony = new Colony();
-        playerentity = new Entity(colony.getxPos(), colony.getyPos(), 0, false, true);
-        map.add(playerentity);
+        //POPULATE MAP:
+        //player start defaults:
+        world = new WorldMap();
+        world.addToWorld(new Colony(true,false,1,10));
         populateMap(3);
 
         //MAIN GAME LOOP
         while (running) {
-            colony.grow();
-            //TODO This will move out at some point:
-            //need to integrate entity and colony togetehr:
-            playerentity.setStrength(colony.getAnts()/10000);
-            refreshMap();
 
-            //if (Events.randomEventOccurs) { handle event }
+            //GAME TICK LOGIC:
+            System.out.println("growing..");
+            world.growEveryone();
 
 
+            //TODO this is a hack to always show player colony:
+            activeColony = (Colony) world.getPlayerHomeColony();
 
-            //tick time = 1 second.
+
+
+            //TICK WAIT TIME 1 SEC:
             try {
                 Thread.sleep(1000);
             }
@@ -52,28 +51,25 @@ public class GameRunner implements Runnable {
 
 
 
-                //TODO all this should be moved to a generic sendmessage and
+            //TODO all this should be moved to a generic sendmessage and
             //TODO not worry about what screen i'm on.  if screen != null etc.
-                //handler attempt
-                while (message == null) {
-                    try {
-                        System.out.println("");
-                        System.out.println(ColonyActivity.getHandler());
-                        message = ColonyActivity.getHandler().obtainMessage();
-                    }
-                    catch (Exception e)
-                    {
-
-                    }
+            //handler attempt
+            while (message == null) {
+                try
+                {
+                    message = ColonyActivity.getHandler().obtainMessage();
                 }
-                Bundle bundle = new Bundle();
-                bundle.putString("ants", colony.getZeroPaddedAnts());
-                bundle.putString("queens", "Queens Count: " + colony.getQueens());
-                bundle.putString("growth", "Growth: " + colony.getGrowth());
-                message.setData(bundle);
-                ColonyActivity.getHandler().sendMessage(message);
-                message = null;
-                //end attempt
+                catch (Exception e)
+                {  }
+            }
+            Bundle bundle = new Bundle();
+            bundle.putString("ants", activeColony.getZeroPaddedAnts());
+            bundle.putString("queens", "Queens Count: " + activeColony.getQueens());
+            bundle.putString("growth", "Growth: " + activeColony.getGrowth());
+            bundle.putString("selectedEntityName", "MY COLONY");
+            message.setData(bundle);
+            ColonyActivity.getHandler().sendMessage(message);
+            message = null;
         }
     }
 
@@ -89,39 +85,18 @@ public class GameRunner implements Runnable {
         Random random = new Random();
         for (int i = 0; i < inPopulation; i++)
         {
-            // random entity at x,y 0-10 and strength 0-100 and evil Y-N
-            Entity e = new Entity(random.nextInt(10), random.nextInt(10),
-                    random.nextInt(100), random.nextBoolean(), false);
-            if (isVacant(e.getxPos(), e.getyPos()))
-            {
-                map.add(e);
-            }
-            else
-            {
-                i--;
-            }
+            // random entity add:
+            world.addToWorld(new Bonus(false, random.nextBoolean(), random.nextInt(100)));
         }
     }
 
-    private boolean isVacant(int inX, int inY)
+    public Colony getActiveColony()
     {
-        for (Entity e : map)
-        {
-            if (e.getxPos() == inX && e.getyPos() == inY) {
-                return false;
-            }
-        }
-        return true;
+        return activeColony;
     }
 
-    private void refreshMap()
+    public List getEntityList()
     {
-        //getting concurrentModificationException when trying to modify 'map' here (in main loop).
-        //need to pull out the map stuff into its own class i think.
-    }
-
-    public List<Entity> getEntityList()
-    {
-        return map;
+        return world.getList();
     }
 }

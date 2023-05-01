@@ -48,10 +48,6 @@ public class ColonyActivity extends AppCompatActivity {
         textViewGrowth = (TextView) findViewById(R.id.growth);
     }
 
-    public void setProgress() {
-
-    }
-
     public void onPictureView(View view) {
         Intent intent = new Intent(this, PictureActivity.class);
         startActivity(intent);
@@ -59,9 +55,9 @@ public class ColonyActivity extends AppCompatActivity {
 
     public void onAddQueen(View view) {
         AntWorldApp mainApp = (AntWorldApp)getApplicationContext();
-        if (mainApp.getGameRunner().getColony().getAnts() > 100) {
-            mainApp.getGameRunner().getColony().addQueen();
-            mainApp.getGameRunner().getColony().killAnts(100);
+        if (mainApp.getGameRunner().getActiveColony().getAnts() > 100) {
+            mainApp.getGameRunner().getActiveColony().addQueen();
+            mainApp.getGameRunner().getActiveColony().killAnts(100);
         }
     }
 

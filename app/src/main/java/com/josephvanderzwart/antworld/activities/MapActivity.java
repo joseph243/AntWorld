@@ -16,114 +16,90 @@ import com.josephvanderzwart.antworld.AntWorldApp;
 import com.josephvanderzwart.antworld.game.Entity;
 import com.josephvanderzwart.antworld.R;
 
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MapActivity extends AppCompatActivity {
 
     private static Handler handler;
-
-    public static Handler getHandler(){
-        return handler;
-    }
-
-    private void initializeHandler() {
-        //init handler for posting message:
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg){
-
-            }
-        };
-    }
+    private TextView textViewAnts;
+    private TextView textViewQueens;
+    private TextView textViewGrowth;
+    private TextView selectedEntityNameTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        initializeHandler();
         TableLayout mapLayout = (TableLayout) findViewById(R.id.table1);
         AntWorldApp mainApp = (AntWorldApp)getApplicationContext();
-        List<Entity> map = mainApp.getGameRunner().getEntityList();
+        List<Entity> activeEntities = mainApp.getGameRunner().getEntityList();
+        HashMap<Integer, TextView> squares = new HashMap<>();
 
+        //populate text views:
+        textViewAnts = (TextView) findViewById(R.id.ants);
+        textViewQueens = (TextView) findViewById(R.id.queens);
+        textViewGrowth = (TextView) findViewById(R.id.growth);
+        selectedEntityNameTextView = (TextView) findViewById(R.id.selectedEntityNameTextView);
+        selectedEntityNameTextView.setText("Colony Name Here");
+
+
+        //HARD-CODED MAP SIZE:
+        for (int i = 0; i < 100; i++)
+        {
+            //defaults:
+            TextView tv = new TextView(this);
+            tv.setHeight(60);
+            tv.setWidth(60);
+            tv.setBackgroundColor(Color.GRAY);
+            squares.put(i, tv);
+        }
+
+        for (Entity e : activeEntities)
+        {
+            System.out.println("start debug with size= " + activeEntities.size());
+            System.out.println(e.toString());
+            if (!e.isEvil())
+            {
+                TextView tv = squares.get(e.getLoc());
+                tv.setText("" + e.getStrength());
+                tv.setBackgroundColor(Color.GREEN);
+                squares.put(e.getLoc(), tv);
+            }
+            if (e.isEvil())
+            {
+                TextView tv = squares.get(e.getLoc());
+                tv.setText("" + e.getStrength());
+                tv.setBackgroundColor(Color.RED);
+                squares.put(e.getLoc(), tv);
+            }
+            if (e.isPlayer())
+            {
+                TextView tv = squares.get(e.getLoc());
+                tv.setText("" + e.getStrength());
+                tv.setBackgroundColor(Color.CYAN);
+                squares.put(e.getLoc(), tv);
+            }
+        }
+
+        int j = 0;
         for (int y = 0; y < 10; y++)
         {
             TableRow tr = new TableRow(this);
             for (int x = 0; x < 10; x++)
             {
-                TextView tv = new TextView(this);
-                tv.setHeight(60);
-                tv.setWidth(60);
-                //who lives at these coord?
-                //resident[] = {type, strength};
-                int[] resident = determineResidency(map, x, y);
-                if (resident[0] == 3)
-                {
-                    //empty:
-                    tv.setBackgroundColor(Color.GRAY);
-                }
-                if (resident[0] == 2)
-                {
-                    //evil
-                    tv.setBackgroundColor(Color.RED);
-                    tv.setText("" + resident[1]);
-                }
-                if (resident[0] == 1)
-                {
-                    //good
-                    tv.setBackgroundColor(Color.GREEN);
-                    tv.setText("" + resident[1]);
-                }
-                if (resident[0] == 0)
-                {
-                    //player
-                    tv.setBackgroundColor(Color.CYAN);
-                    tv.setText("" + resident[1]);
-                }
-                 tr.addView(tv);
+                 tr.addView(squares.get(j));
+                 j++;
             }
             tr.setLayoutParams(new
                     TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
                     TableRow.LayoutParams.WRAP_CONTENT));
             mapLayout.addView(tr);
-
         }
 
-    }
-
-    public int[] determineResidency(List<Entity> inMap, int inX, int inY)
-    {
-        //[id, strength]
-        //id: 0 = player, 1 = good, 2 = evil, 3 = empty
-        //strength: 0-100
-        int id = 3;
-        int str;
-        for (Entity e : inMap)
-        {
-            if (e.getxPos() == inX && e.getyPos() == inY)
-            {
-                //occupied:
-                str = e.getStrength();
-                if (!e.isEvil())
-                {
-                    id = 1;
-                }
-                if (e.isEvil())
-                {
-                    id = 2;
-                }
-                if (e.isPlayer())
-                {
-                    id = 0;
-                    System.out.println("set player entity to zero!");
-                }
-                int[] result = {id, str};
-                return result;
-            }
-        }
-        //not occupied:
-        id = 3;
-        str = 0;
-        int[] result = {id, str};
-        return result;
     }
 
     public void onReturnClick(View view) {
@@ -132,4 +108,16 @@ public class MapActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void initializeHandler() {
+        //init handler for posting message:
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg){
+                textViewAnts.setText(msg.getData().get("ants").toString());
+                textViewQueens.setText(msg.getData().get("queens").toString());
+                textViewGrowth.setText(msg.getData().get("growth").toString());
+                selectedEntityNameTextView.setText(msg.getData().get("selectedEntityName").toString());
+            }
+        };
+    }
 }

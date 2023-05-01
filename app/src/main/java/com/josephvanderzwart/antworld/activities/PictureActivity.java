@@ -19,7 +19,7 @@ public class PictureActivity extends AppCompatActivity {
 
     public void onPictureClick(View view) {
         AntWorldApp mainApp = (AntWorldApp)getApplicationContext();
-        mainApp.getGameRunner().getColony().killAnts(10);
+       // mainApp.getGameRunner().getColony().killAnts(10);
 
         Intent intent = new Intent(this, ColonyActivity.class);
         startActivity(intent);

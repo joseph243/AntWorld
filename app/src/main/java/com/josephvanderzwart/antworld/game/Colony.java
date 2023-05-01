@@ -1,63 +1,39 @@
 package com.josephvanderzwart.antworld.game;
 
-import java.util.Random;
 
-public class Colony {
+public class Colony extends Entity{
 
     private int ants;
     private int food;
     private int queens;
     private int growth;
-    private boolean enoughFood;
-    private int xPos;
-    private int yPos;
-    //TODO  modifiers, key, value pair ??
 
-    public Colony(int inQueens, int inAnts) {
+    public Colony(boolean isPlayer, boolean isEvil, int inQueens, int inAnts) {
+        super(isPlayer, isEvil, inAnts/10000);
         setup(inAnts, inQueens);
     }
 
-    public Colony() {
-        setup(10,1);
-    }
-
     private void setup(int inAnts, int inQueens) {
-        Random random = new Random();
         this.ants = inAnts;
         this.queens = inQueens;
         this.food = 1;
         this.growth = 1;
-        this.xPos = random.nextInt(10);
-        this.yPos = random.nextInt(10);
     }
     //main progression for each tick.
     public void grow() {
 
-//        if (food >= (ants / 10)) {
-//            enoughFood = true;
-//        }
-//        else enoughFood = false;
         //TODO implement food system
-        enoughFood = true;
 
         //growth calculation:
         growth = 0 + queens;
 
-        //size cap 1mil:
+        //growth operation:
         if (ants < 1000000) {
-            //enough food = normal growth
-            if (enoughFood) {
-                ants = ants + (1 * growth);
-            }
-            //else growth penalty
-            else {
-                ants = ants + (1 * (growth-1));
-            }
+            ants = ants + (1 * growth);
         }
 
-        //TODO food system
-        // eat one food if present
-        if (food > 0) {food -= 1;}
+        //strength calculation:
+        this.setStrength(ants/10000);
     }
 
     public void handleEvent() {
@@ -96,7 +72,4 @@ public class Colony {
 
     public void addQueen() {queens = queens + 1; }
 
-    public int getxPos() {return xPos;}
-
-    public int getyPos() {return yPos;}
 }
