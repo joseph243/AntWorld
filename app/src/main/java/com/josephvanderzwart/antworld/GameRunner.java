@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.Message;
 
 import com.josephvanderzwart.antworld.activities.ColonyActivity;
+import com.josephvanderzwart.antworld.activities.MapActivity;
+import com.josephvanderzwart.antworld.activities.ScoreActivity;
 import com.josephvanderzwart.antworld.game.*;
 
 import java.util.List;
@@ -13,7 +15,9 @@ public class GameRunner implements Runnable {
 
     private volatile boolean running = true;
     private Thread thread;
-    public Message message;
+    public Message colonyMessage;
+    public Message mapMessage;
+    public Message scoreMessage;
     private WorldMap world;
     private Colony activeColony;
 
@@ -27,21 +31,23 @@ public class GameRunner implements Runnable {
         //POPULATE MAP:
         //player start defaults:
         world = new WorldMap();
-        world.addToWorld(new Colony(true,false,1,10));
+        world.addToWorld(new Colony(true,false,1,300000));
         populateMap(3);
 
         //MAIN GAME LOOP
         while (running) {
 
-            //GAME TICK LOGIC:
+            //game logic per tick:
             System.out.println("growing..");
             world.growEveryone();
-
 
             //TODO this is a hack to always show player colony:
             activeColony = (Colony) world.getPlayerHomeColony();
 
-
+            //send data to various screens:
+            buildMessageColony();
+            buildMessageMap();
+            buildMessageScore();
 
             //TICK WAIT TIME 1 SEC:
             try {
@@ -49,28 +55,63 @@ public class GameRunner implements Runnable {
             }
             catch (InterruptedException e) {}
 
+        }
+    }
 
+    public void setActiveColony(int index)
+    {
+        activeColony = (Colony) world.getEntityAt(index);
+    }
 
-            //TODO all this should be moved to a generic sendmessage and
-            //TODO not worry about what screen i'm on.  if screen != null etc.
-            //handler attempt
-            while (message == null) {
-                try
-                {
-                    message = ColonyActivity.getHandler().obtainMessage();
-                }
-                catch (Exception e)
-                {  }
-            }
+    private void buildMessageColony()
+    {
+        try
+        {
+            colonyMessage = ColonyActivity.getHandler().obtainMessage();
             Bundle bundle = new Bundle();
             bundle.putString("ants", activeColony.getZeroPaddedAnts());
             bundle.putString("queens", "Queens Count: " + activeColony.getQueens());
             bundle.putString("growth", "Growth: " + activeColony.getGrowth());
             bundle.putString("selectedEntityName", "MY COLONY");
-            message.setData(bundle);
-            ColonyActivity.getHandler().sendMessage(message);
-            message = null;
+            colonyMessage.setData(bundle);
+            ColonyActivity.getHandler().sendMessage(colonyMessage);
         }
+        catch (Exception e)
+        {  }
+        colonyMessage = null;
+    }
+
+    private void buildMessageScore() {
+        try {
+            scoreMessage = ScoreActivity.getHandler().obtainMessage();
+            Bundle bundle = new Bundle();
+            bundle.putString("colonies", "Colonies: " + world.getList().size());
+            bundle.putString("queens", "Queens Count: " + activeColony.getQueens());
+            bundle.putString("growth", "Growth: " + activeColony.getGrowth());
+            bundle.putString("selectedEntityName", "MY COLONY");
+            scoreMessage.setData(bundle);
+            ScoreActivity.getHandler().sendMessage(scoreMessage);
+        } catch (Exception e)
+        {   }
+        scoreMessage = null;
+    }
+
+    private void buildMessageMap()
+    {
+        try
+        {
+            mapMessage = MapActivity.getHandler().obtainMessage();
+            Bundle bundle = new Bundle();
+            bundle.putString("ants", activeColony.getZeroPaddedAnts());
+            bundle.putString("queens", "Queens Count: " + activeColony.getQueens());
+            bundle.putString("growth", "Growth: " + activeColony.getGrowth());
+            bundle.putString("selectedEntityName", "MY COLONY");
+            mapMessage.setData(bundle);
+            MapActivity.getHandler().sendMessage(mapMessage);
+        }
+        catch (Exception e)
+        {  }
+        mapMessage = null;
     }
 
     public void start() {
