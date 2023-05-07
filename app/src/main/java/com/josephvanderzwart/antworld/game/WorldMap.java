@@ -41,7 +41,7 @@ public class WorldMap {
         else return false;
     }
 
-    public boolean addToWorld(Entity e)
+    public int addToWorld(Entity e)
     {
         int randomLocation;
         boolean success = false;
@@ -62,7 +62,7 @@ public class WorldMap {
             }
         }
         while (!success);
-        return success;
+        return randomLocation;
     }
 
     public boolean addToWorld(Entity e, int coord)
@@ -74,17 +74,6 @@ public class WorldMap {
             return true;
         }
         return false;
-    }
-
-    public Entity getPlayerHomeColony()
-    {
-        for (Entity e : worldMap.values())
-        {
-            if (e.isPlayer()) {
-                return e;
-            }
-        }
-        return null;
     }
 
     public void growEveryone()

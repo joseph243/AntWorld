@@ -21,7 +21,7 @@ public class Colony extends Entity{
     }
     //main progression for each tick.
     public void grow() {
-
+        System.out.println("Colony at " + this.getLoc() + " grows.  pop = " + this.getQueens() + "," + this.getAnts());
         //TODO implement food system
 
         //growth calculation:
@@ -71,5 +71,7 @@ public class Colony extends Entity{
     }
 
     public void addQueen() {queens = queens + 1; }
+
+    public void removeQueen() {queens = queens - 1; }
 
 }

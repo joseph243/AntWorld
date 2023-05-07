@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -30,6 +31,10 @@ public class MapActivity extends AppCompatActivity {
     private TextView textViewGrowth;
     private TextView selectedEntityNameTextView;
     private TextView[] colonyMap = new TextView[100];
+    private boolean mapIsDrawn = false;
+    private Button buttonSendQueen;
+    private Button buttonSetActiveColony;
+    private int selectedEntityId = 0;
 
     private static Handler handler;
 
@@ -55,42 +60,76 @@ public class MapActivity extends AppCompatActivity {
         setContentView(R.layout.activity_map);
         initializeHandler();
         drawMap();
-        //populate text views:
+        //assign text views:
         textViewAnts = (TextView) findViewById(R.id.ants);
         textViewQueens = (TextView) findViewById(R.id.queens);
         textViewGrowth = (TextView) findViewById(R.id.growth);
         selectedEntityNameTextView = (TextView) findViewById(R.id.selectedEntityNameTextView);
         selectedEntityNameTextView.setText("Home Colony");
+        buttonSendQueen = (Button) findViewById(R.id.button7);
+        buttonSendQueen.setVisibility(View.INVISIBLE);
+        buttonSetActiveColony = (Button) findViewById(R.id.button8);
+        buttonSetActiveColony.setVisibility(View.INVISIBLE);
     }
 
-    private void setActiveEntity(int index)
+    public void onSendQueen(View view)
     {
         AntWorldApp mainApp = (AntWorldApp)getApplicationContext();
+        mainApp.getGameRunner().sendQueen(selectedEntityId);
+        drawMap();
+        setColonyOutputDisplay();
+    }
+
+    public void onSetActiveColony(View view)
+    {
+        AntWorldApp mainApp = (AntWorldApp)getApplicationContext();
+        mainApp.getGameRunner().setActiveColony(selectedEntityId);
+    }
+
+    private void setSelectedEntity(int index)
+    {
+        System.out.println("selection: " + index);
+        selectedEntityId = index;
+        AntWorldApp mainApp = (AntWorldApp)getApplicationContext();
+        String cellDescription = "MapActivity.java : setActiveEntity: unrecognized entity";
         if (mainApp.getGameRunner().getEntityAt(index) == null)
         {
-            //empty cell selected:
-            selectedEntityNameTextView.setText("Empty Region");
+            cellDescription = "Empty Region " + index;
+            setEmptyOutputDisplay();
         }
         else
         {
             //populated cell selected:
-            Class entityType = mainApp.getGameRunner().getEntityAt(index).getClass();
+            Entity entityInThisCell = mainApp.getGameRunner().getEntityAt(index);
+            Class entityType = entityInThisCell.getClass();
             if (Bonus.class.equals(entityType)) {
-                selectedEntityNameTextView.setText("Bonus Resource");
+                cellDescription = (entityInThisCell.isEvil()? "Toxic Zone "  + index + ": Strength "
+                        : "Bonus Resource " + index + ": Strength ");
+                cellDescription = cellDescription +  + entityInThisCell.getStrength();
+                setBonusOutputDisplay("" + entityInThisCell.getStrength());
             }
             if (Colony.class.equals(entityType)) {
-                mainApp.getGameRunner().setActiveColony(index);
+                if (entityInThisCell.isPlayer())
+                {
+                    cellDescription = "My Colony "  + index +  ": Strength ";
+                    setColonyOutputDisplay();
+                }
+                else
+                {
+                    cellDescription = "Enemy Colony "  + index +  ": Strength ";
+                }
+                cellDescription = cellDescription +  + entityInThisCell.getStrength();
             }
         }
-
-
+        selectedEntityNameTextView.setText(cellDescription);
+        drawMap();
     }
 
     private void drawMap() {
         //HARD-CODED MAP SIZE = 100
         //BUILD AND POPULATE MAP:
-
         TableLayout mapLayout = (TableLayout) findViewById(R.id.table1);
+        mapLayout.removeAllViews();
         AntWorldApp mainApp = (AntWorldApp)getApplicationContext();
         List<Entity> activeEntities = mainApp.getGameRunner().getEntityList();
         HashMap<Integer, TextView> squares = new HashMap<>();
@@ -106,7 +145,7 @@ public class MapActivity extends AppCompatActivity {
             colonyMap[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    setActiveEntity(finalI);
+                    setSelectedEntity(finalI);
                 }
             });
             squares.put(i, colonyMap[i]);
@@ -153,11 +192,36 @@ public class MapActivity extends AppCompatActivity {
                     TableRow.LayoutParams.WRAP_CONTENT));
             mapLayout.addView(tr);
         }
+        mapIsDrawn = true;
     }
 
     public void onReturnClick(View view) {
         AntWorldApp mainApp = (AntWorldApp) getApplicationContext();
         Intent intent = new Intent(this, ColonyActivity.class);
         startActivity(intent);
+    }
+
+    private void setEmptyOutputDisplay() {
+        handler = null;
+        textViewGrowth.setText(null);
+        textViewQueens.setText(null);
+        textViewAnts.setText("0");
+        buttonSendQueen.setVisibility(View.VISIBLE);
+        buttonSetActiveColony.setVisibility(View.INVISIBLE);
+    }
+
+    private void setBonusOutputDisplay(String inStrength) {
+        handler = null;
+        textViewGrowth.setText(null);
+        textViewQueens.setText("Strength " + inStrength);
+        textViewAnts.setText("0");
+        buttonSendQueen.setVisibility(View.VISIBLE);
+        buttonSetActiveColony.setVisibility(View.INVISIBLE);
+    }
+
+    private void setColonyOutputDisplay() {
+        initializeHandler();
+        buttonSendQueen.setVisibility(View.INVISIBLE);
+        buttonSetActiveColony.setVisibility(View.VISIBLE);
     }
 }

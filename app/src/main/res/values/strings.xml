@@ -7,6 +7,8 @@
     <string name="mapView">Map View</string>
     <string name="picture">Event</string>
     <string name="return_button">Return</string>
+    <string name="send_queen_button">Send Queen</string>
+    <string name="set_active_colony_button">Set Active Colony</string>
 
     <string name="event_bird_kill">Your ants were consumed by a hungry bird.  One ant survived long enough to raise alarm.</string>
     <string name="event_bird_consume">Your ants have encountered a weakened bird and killed it.</string>

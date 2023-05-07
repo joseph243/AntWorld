@@ -20,6 +20,7 @@ public class GameRunner implements Runnable {
     public Message scoreMessage;
     private WorldMap world;
     private Colony activeColony;
+    private int startLoc;
 
     public Entity getEntityAt(int coord) {
         return world.getEntityAt(coord);
@@ -31,18 +32,16 @@ public class GameRunner implements Runnable {
         //POPULATE MAP:
         //player start defaults:
         world = new WorldMap();
-        world.addToWorld(new Colony(true,false,1,300000));
+        startLoc = world.addToWorld(new Colony(true,false,100,300000));
+        activeColony = (Colony) world.getEntityAt(startLoc);
         populateMap(3);
 
         //MAIN GAME LOOP
         while (running) {
 
             //game logic per tick:
-            System.out.println("growing..");
             world.growEveryone();
-
-            //TODO this is a hack to always show player colony:
-            activeColony = (Colony) world.getPlayerHomeColony();
+            System.out.println("Active Colony id: " + activeColony.getLoc());
 
             //send data to various screens:
             buildMessageColony();
@@ -60,7 +59,10 @@ public class GameRunner implements Runnable {
 
     public void setActiveColony(int index)
     {
+        System.out.println("gameRunner setActiveColony: " + activeColony.getLoc() + " to " + index);
+        activeColony = null;
         activeColony = (Colony) world.getEntityAt(index);
+        System.out.println("end.  active = " + activeColony.getLoc());
     }
 
     private void buildMessageColony()
@@ -79,6 +81,18 @@ public class GameRunner implements Runnable {
         catch (Exception e)
         {  }
         colonyMessage = null;
+    }
+
+    public void sendQueen(int inDestination) {
+        if (activeColony.getQueens() > 0)
+        {
+            activeColony.removeQueen();
+            world.addToWorld(new Colony(true, false, 1, 0), inDestination);
+        }
+        else
+        {
+            //TODO feedback to player
+        }
     }
 
     private void buildMessageScore() {
